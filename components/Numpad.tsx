@@ -7,9 +7,10 @@ import {
   TextInput,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import { ChevronRight } from "lucide-react-native";
 
 const Numpad = () => {
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState("6");
   const [comment, setComment] = useState("");
   const [isCommentVisible, setIsCommentVisible] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("Cash");
@@ -17,6 +18,7 @@ const Numpad = () => {
 
   const handleNumberPress = (number: string) => {
     setInputValue((prev) => prev + number);
+    console.log("Number pressed:");
   };
 
   const handleDotPress = () => {
@@ -51,47 +53,10 @@ const Numpad = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.dropdownContainer}>
-        <Picker
-          selectedValue={paymentMethod}
-          style={styles.picker}
-          onValueChange={handlePaymentMethodChange}
-        >
-          <Picker.Item label="Cash" value="Cash" />
-          <Picker.Item label="Debit" value="Debit" />
-          <Picker.Item label="Credit" value="Credit" />
-        </Picker>
-        <Picker
-          selectedValue={category}
-          style={styles.picker}
-          onValueChange={handleCategoryChange}
-        >
-          <Picker.Item label="Shopping" value="Shopping" />
-          <Picker.Item label="Food" value="Food" />
-          <Picker.Item label="Gifts" value="Gifts" />
-          <Picker.Item label="Entertainment" value="Entertainment" />
-          <Picker.Item label="Travel" value="Travel" />
-          <Picker.Item label="Bills" value="Bills" />
-        </Picker>
-      </View>
       <View style={styles.inputContainer}>
         <Text style={styles.dollarSign}>$</Text>
         <Text style={styles.inputText}>{inputValue}</Text>
       </View>
-      <TouchableOpacity
-        onPress={handleAddCommentPress}
-        style={styles.commentButton}
-      >
-        <Text style={styles.commentButtonText}>Add comment...</Text>
-      </TouchableOpacity>
-      {isCommentVisible && (
-        <TextInput
-          style={styles.commentInput}
-          value={comment}
-          onChangeText={handleCommentChange}
-          placeholder="Enter comment"
-        />
-      )}
       <View style={styles.numpadContainer}>
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
           <TouchableOpacity
@@ -120,12 +85,6 @@ const Numpad = () => {
         >
           <Text style={styles.buttonText}>⌫</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={handleCheckmarkPress}
-          style={[styles.button, styles.specialButton]}
-        >
-          <Text style={styles.buttonText}>✔</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
@@ -137,6 +96,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     padding: 20,
+    marginTop: 32,
   },
   dropdownContainer: {
     flexDirection: "row",
@@ -145,7 +105,6 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     marginTop: 0,
     borderRadius: 30,
-    backgroundColor: "lightblue",
   },
   picker: {
     flex: 1,
@@ -155,7 +114,6 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: "row",
-    alignItems: "center",
     marginBottom: 10,
   },
   dollarSign: {
@@ -187,12 +145,13 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "center",
     width: "100%",
+    marginTop: 20,
   },
   button: {
     width: "30%",
     height: 70,
     margin: 5,
-    borderRadius: 35,
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
   },
