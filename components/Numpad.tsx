@@ -1,61 +1,37 @@
 import React, { useState } from "react";
-import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  View,
-  TextInput,
-} from "react-native";
-import { Picker } from "@react-native-picker/picker";
-import { ChevronRight } from "lucide-react-native";
+import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
 
-const Numpad = () => {
-  const [inputValue, setInputValue] = useState("6");
-  const [comment, setComment] = useState("");
-  const [isCommentVisible, setIsCommentVisible] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("Cash");
-  const [category, setCategory] = useState("Shopping");
+const Numpad = ({ setTime }: { setTime: (time: number) => void }) => {
+  const [inputValue, setInputValue] = useState("15:00");
 
-  const handleNumberPress = (number: string) => {
-    setInputValue((prev) => prev + number);
-    console.log("Number pressed:");
+  const formatTime = (time: string) => {
+    const [minutes, seconds] = time.split(":").map(Number);
+    return minutes * 60 + seconds;
   };
 
-  const handleDotPress = () => {
-    if (!inputValue.includes(".")) {
-      setInputValue((prev) => prev + ".");
-    }
+  const handleNumberPress = (number: string) => {
+    setInputValue((prev) => {
+      const newValue = prev.replace(":", "").slice(-3) + number;
+      return newValue.padStart(4, "0").replace(/(\d{2})(\d{2})/, "$1:$2");
+    });
   };
 
   const handleDeletePress = () => {
-    setInputValue((prev) => prev.slice(0, -1));
+    setInputValue((prev) => {
+      const newValue = prev.replace(":", "").slice(0, -1);
+      return newValue.padStart(4, "0").replace(/(\d{2})(\d{2})/, "$1:$2");
+    });
   };
 
-  const handleCheckmarkPress = () => {
-    // Handle checkmark press logic here
-  };
-
-  const handleAddCommentPress = () => {
-    setIsCommentVisible(true);
-  };
-
-  const handleCommentChange = (text: string) => {
-    setComment(text);
-  };
-
-  const handlePaymentMethodChange = (itemValue: string) => {
-    setPaymentMethod(itemValue);
-  };
-
-  const handleCategoryChange = (itemValue: string) => {
-    setCategory(itemValue);
+  const handleStartPress = () => {
+    const time = formatTime(inputValue);
+    setTime(time);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
-        <Text style={styles.dollarSign}>$</Text>
-        <Text style={styles.inputText}>{inputValue}</Text>
+        <Text style={styles.inputText}>{inputValue === "0000" ? "00:00" : inputValue}</Text>
       </View>
       <View style={styles.numpadContainer}>
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
@@ -68,12 +44,6 @@ const Numpad = () => {
           </TouchableOpacity>
         ))}
         <TouchableOpacity
-          onPress={handleDotPress}
-          style={[styles.button, styles.numberButton]}
-        >
-          <Text style={styles.buttonText}>.</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
           onPress={() => handleNumberPress("0")}
           style={[styles.button, styles.numberButton]}
         >
@@ -81,11 +51,17 @@ const Numpad = () => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleDeletePress}
-          style={[styles.button, styles.specialButton]}
+          style={[styles.button, styles.specialButton, { width: "63%" }]}
         >
           <Text style={styles.buttonText}>⌫</Text>
         </TouchableOpacity>
       </View>
+      <TouchableOpacity
+        onPress={handleStartPress}
+        style={[styles.button, styles.specialButton, { width: "95%" }]}
+      >
+        <Text style={styles.buttonText}>Start</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -98,47 +74,14 @@ const styles = StyleSheet.create({
     padding: 20,
     marginTop: 32,
   },
-  dropdownContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    marginBottom: 0,
-    marginTop: 0,
-    borderRadius: 30,
-  },
-  picker: {
-    flex: 1,
-    height: 50,
-    width: "45%",
-    marginBottom: 0,
-  },
   inputContainer: {
     flexDirection: "row",
     marginBottom: 10,
   },
-  dollarSign: {
-    fontSize: 36,
-    fontWeight: "bold",
-  },
   inputText: {
-    fontSize: 36,
+    fontSize: 45,
     fontWeight: "bold",
-    marginLeft: 10,
-  },
-  commentButton: {
-    marginBottom: 10,
-  },
-  commentButtonText: {
-    fontSize: 18,
-    color: "gray",
-  },
-  commentInput: {
-    width: "100%",
-    padding: 10,
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 10,
+    color: "white",
   },
   numpadContainer: {
     flexDirection: "row",
@@ -159,7 +102,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f2f2",
   },
   specialButton: {
-    backgroundColor: "lightgreen",
+    backgroundColor: "lightblue",
     height: 67,
   },
   buttonText: {
