@@ -3,6 +3,25 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import Numpad from "@/components/Numpad";
 import { Play, Pause, RotateCw, ChevronsUp } from 'lucide-react-native'; // Ensure this import path is correct
+import { useAtom } from "jotai";
+import { colourAtom } from "@/atoms/atoms";
+
+const colourPresets = [{
+  name: "Blue",
+  value: "blue",
+  colour: "#3B82F6",
+  backgroundColour: "#172554"
+}, {
+  name: "Red",
+  value: "red",
+  colour: "#EF4444",
+  backgroundColour: "#450a0a"
+}, {
+  name: "Green",
+  value: "green",
+  colour: "#22c55e",
+  backgroundColour: "#052e16"
+}]
 
 export default function HomeScreen() {
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -11,6 +30,7 @@ export default function HomeScreen() {
   const [isRunning, setIsRunning] = useState(false);
   const [displayMinutes, setDisplayMinutes] = useState("");
   const [displaySeconds, setDisplaySeconds] = useState("");
+  const [colour, setColour] = useAtom(colourAtom)
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
@@ -58,7 +78,10 @@ export default function HomeScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={{
+      ...styles.container,
+      backgroundColor: colourPresets.find((preset) => preset.value === colour)?.backgroundColour
+    }}>
       <BottomSheet
         ref={bottomSheetRef}
         onChange={handleSheetChanges}
@@ -75,19 +98,37 @@ export default function HomeScreen() {
       {time > 0 && (
         <>
           <View style={styles.timerContainer}>
-            <Text style={styles.timerMinutes}>{displayMinutes}</Text>
-            <Text style={styles.timerSeconds}>{displaySeconds}</Text>
+            <Text style={[{
+              fontSize: 140,
+              fontWeight: "semibold",
+              color: colourPresets.find((preset) => preset.value === colour)?.colour,
+            }, isRunning && {
+              fontWeight: "bold"
+            }]}>{displayMinutes}</Text>
+            <Text style={[{
+              fontSize: 140,
+              fontWeight: "semibold",
+              color: "white",
+            }, isRunning && {
+              fontWeight: "bold"
+            }]}>{displaySeconds}</Text>
           </View>
           <View style={styles.buttonContainer}>
             <Pressable
               onPress={handleRestartTimer}
-              style={styles.button}
+              style={{
+                ...styles.button,
+                backgroundColor: colourPresets.find((preset) => preset.value === colour)?.colour
+              }}
             >
               <RotateCw color="white" size={26} />
             </Pressable>
             <Pressable
               onPress={() => setIsRunning((prev) => !prev)}
-              style={styles.button}
+              style={{
+                ...styles.button,
+                backgroundColor: colourPresets.find((preset) => preset.value === colour)?.colour
+              }}
             >
               {isRunning ? (
                 <Pause color="white" size={26} />
@@ -97,7 +138,10 @@ export default function HomeScreen() {
             </Pressable>
             <Pressable
               onPress={handleOpenBottomSheet}
-              style={styles.button}
+              style={{
+                ...styles.button,
+                backgroundColor: colourPresets.find((preset) => preset.value === colour)?.colour
+              }}
             >
               <ChevronsUp color="white" size={26} />
             </Pressable>
@@ -112,7 +156,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 24,
-    backgroundColor: "#081426",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -130,16 +173,8 @@ const styles = StyleSheet.create({
   timerContainer: {
     justifyContent: "center",
     alignItems: "center",
-  },
-  timerLabel: {
-    fontSize: 24,
-    color: "#3B82F6",
-    marginVertical: 10,
-  },
-  timerMinutes: {
-    fontSize: 140,
-    fontWeight: "bold",
-    color: "#3B82F6",
+    flexDirection: "column",
+    marginTop: 20,
   },
   timerSeconds: {
     fontSize: 140,
@@ -152,9 +187,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     paddingHorizontal: 40,
+    marginTop: 32,
   },
   button: {
-    backgroundColor: "#3B82F6",
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 15,
