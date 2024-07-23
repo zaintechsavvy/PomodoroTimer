@@ -1,0 +1,11 @@
+@font-face {
+  font-family: "Baloo Bhai 2";
+  src: url("/fonts/BalooBhai2-ExtraBold.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body,
+html {
+  font-family: "Baloo Bhai 2", sans-serif;
+}

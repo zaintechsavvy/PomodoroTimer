@@ -29,6 +29,7 @@ export default function TabTwoScreen() {
         flexDirection: 'row',
         gap: 16,
         alignItems: 'center',
+        
       }}>
         <ThemedText style={{
           fontSize: 16,
@@ -71,6 +72,17 @@ export default function TabTwoScreen() {
             borderWidth: 3,
             borderColor: '#ffffff50',
           }, colour == 'green' && {
+            borderColor: 'white',
+          }]} />
+          <Pressable onPress={() => handleColourChange('mint')} style={[{
+            width: 32,
+            height: 32,
+            borderRadius: 50,
+            backgroundColor: 'lightgreen',
+            // add a thick border to the button
+            borderWidth: 3,
+            borderColor: '#ffffff50',
+          }, colour == 'mint' && {
             borderColor: 'white',
           }]} />
         </View>
